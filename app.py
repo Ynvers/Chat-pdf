@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+
 from dotenv import load_dotenv
 from pypdf import PdfReader
 from langchain.text_splitter  import CharacterTextSplitter
@@ -14,6 +15,7 @@ from htmlTemplates import css, bot_template, user_template
 #Charger les vairables d'environnement
 load_dotenv()
 genai_api_key = os.getenv('GOOGLE_API_KEY')
+
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -78,7 +80,7 @@ def main():
     st.set_page_config(page_title="Chat with multiple PDF's", page_icon=":books:")
     
     st.write(css, unsafe_allow_html=True)
-
+    
     if "conversation" not in st.session_state:
         st.session_state.conversation = None
 
@@ -92,9 +94,9 @@ def main():
 
     for chat in st.session_state.chat_history:
         if chat["role"] == "user":
-            st.write(user_template.replace("{{MSG}}", chat["content"]), unsafe_allow_html=True)
+            st.markdown(user_template.replace("{{MSG}}", chat["content"]), unsafe_allow_html=True)
         else:
-            st.write(bot_template.replace("{{MSG}}", chat["content"]), unsafe_allow_html=True)
+            st.markdown(bot_template.replace("{{MSG}}", chat["content"]), unsafe_allow_html=True)
 
     with st.sidebar:
         st.subheader("Your documents")

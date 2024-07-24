@@ -1,5 +1,7 @@
 chat-pdf/
+chat-pdf1/
 
 .env
+requirement.txt
 
 __pycache__/
