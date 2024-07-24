@@ -43,7 +43,8 @@ def get_vector_store(text_chunks):
 def get_conversation_chain(vectorstore):
     llm = ChatGoogleGenerativeAI(
         model="gemini-1.5-pro", 
-        temperature=0
+        temperature=0,
+        api_key=genai_api_key
     )
 
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
