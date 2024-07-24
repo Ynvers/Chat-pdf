@@ -14,7 +14,7 @@ from htmlTemplates import css, bot_template, user_template
 
 #Charger les vairables d'environnement
 load_dotenv()
-genai_api_key = os.getenv('GOOGLE_API_KEY')
+genai_api_key = st.secrets["general"]["GOOGLE_API_KEY"]
 
 
 def get_pdf_text(pdf_docs):
