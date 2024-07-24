@@ -1,3 +1,5 @@
 chat-pdf/
 
 .env
+
+__pycache__/

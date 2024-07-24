@@ -44,7 +44,7 @@ def get_conversation_chain(vectorstore):
         temperature=0
     )
 
-    memory = ConversationBufferMemory(memory_key="chat_history", return_message=True)
+    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     
     conversation_chain = ConversationalRetrievalChain.from_llm(
         llm = llm,
@@ -63,9 +63,11 @@ def handle_userinput(user_question):
     if st.session_state.conversation:
         response = st.session_state.conversation({"question": user_question})
         if 'answer' in response:
-            st.write(response['answer'])
+            st.session_state.chat_history.append({"role": "user", "content": user_question})
+            st.session_state.chat_history.append({"role": "bot", "content": response['answer']})
         else:
-            st.write(response)
+            st.session_state.chat_history.append({"role": "user", "content": user_question})
+            st.session_state.chat_history.append({"role": "bot", "content": "Sorry, I couldn't process that request."})
     else:
         st.warning("Conversation is not initialized.")
 
@@ -80,13 +82,19 @@ def main():
     if "conversation" not in st.session_state:
         st.session_state.conversation = None
 
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+
     st.header("Welcome to the Multi-PDF :books: Chat Application")
     user_question = st.text_input("Ask a question about your documents:")
     if user_question:
         handle_userinput(user_question)
 
-    st.write(user_template.replace("{{MSG}}", "hello bot"), unsafe_allow_html=True)
-    st.write(bot_template.replace("{{MSG}}", "hello user"), unsafe_allow_html=True)
+    for chat in st.session_state.chat_history:
+        if chat["role"] == "user":
+            st.write(user_template.replace("{{MSG}}", chat["content"]), unsafe_allow_html=True)
+        else:
+            st.write(bot_template.replace("{{MSG}}", chat["content"]), unsafe_allow_html=True)
 
     with st.sidebar:
         st.subheader("Your documents")
